@@ -1,22 +1,26 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    {{name}}
+    <SkinEditor></SkinEditor>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import SkinEditor from "@/components/SkinEditor";
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  name: "App",
+  components: {SkinEditor},
+  data(){
+    return {
+      name: 'App'
+    }
   }
 }
 </script>
 
 <style>
+@import "main.css";
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
