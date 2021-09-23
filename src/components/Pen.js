@@ -1,8 +1,13 @@
 export default class Pen{
     name="pen";
 
+    // eslint-disable-next-line no-unused-vars
+    onPointerEnter(ctx,pt){
+        ctx.lineWidth = 0.5;
+        return false
+    }
+
     onPointerDown(ctx,pt) {
-        console.log("onPointerDown")
         ctx.beginPath();
         this.pressed = true;
         ctx.moveTo(pt.x, pt.y);

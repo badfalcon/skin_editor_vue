@@ -12,9 +12,6 @@ export default class layerObject{
     this.dom = document.createElement('canvas')
     this.dom.width = 64;
     this.dom.height = 64;
-    let ctx = this.dom.getContext('2d');
-    ctx.fillStyle = this.getRandomColour();
-    ctx.fillRect(0,0,64,64);
   }
 
   toggleVisible(){

@@ -36,9 +36,9 @@ export default {
       console.log("[Skin Editor] repaint")
       let ctx = this.$refs.mainCanvas.getContext('2d')
       ctx.clearRect(0, 0, 400, 400)
-      this.$refs.layerManager.layers.forEach((layer, index) => {
+      this.$refs.layerManager.layers.forEach((layer) => {
         if (layer.visible) {
-          ctx.drawImage(layer.dom, index * 64, 0)
+          ctx.drawImage(layer.dom, 0, 0,400,400)
 
         }
       })
@@ -65,6 +65,7 @@ export default {
     onPointerDown(e) {
       if(typeof this.tools[this.currentTool].onPointerDown == "function"){
         let pt = this.getPoint(e)
+        console.log(pt)
         let repaintFlg =this.tools[this.currentTool].onPointerDown(this.ctx,pt)
         if(repaintFlg) this.repaint()
       }
@@ -99,7 +100,7 @@ export default {
     },
     getPoint(e) {
       let clientRect = e.target.getBoundingClientRect();
-      return {x: e.clientX - clientRect.left, y: e.clientY - clientRect.top};
+      return {x: (e.clientX - clientRect.left)/400*64, y: (e.clientY - clientRect.top)/400*64};
     },
 
     updateLayer(){
@@ -115,11 +116,19 @@ export default {
     console.log("[Skin Editor] mounted")
     // this.currentLayer = this.$refs.layerManager.getLayer()
     // this.ctx = this.currentLayer.dom.getContext('2d')
+    let ctx = this.$refs.mainCanvas.getContext('2d')
+    ctx.imageSmoothingEnabled = false;
     this.selectTool(0)
   }
 }
 </script>
 
 <style scoped>
+#skinEditor{
+  background: aqua;
+}
 
+#mainCanvas{
+  background: white;
+}
 </style>
