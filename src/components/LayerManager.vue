@@ -1,8 +1,8 @@
 <template>
   <div id="layerManager">
-    <div class="debug">{{ name }},{{ current }},{{ nextIndex }},{{ layers }}</div>
+<!--    <div class="debug">{{ name }},{{ current }},{{ nextIndex }},{{ layers }}</div>-->
     <button @click="addLayer">add layer</button>
-    <button @click="repaint">親のイベントを呼び出す</button>
+<!--    <button @click="repaint">親のイベントを呼び出す</button>-->
     <Layer v-for="layer in layers" v-bind:key="layer.id" :layer_obj="layer"
            @layer-toggle="toggle(layer)" @layer-select="select(layer)"
            :class="{currentLayer: layer.id===current}"></Layer>

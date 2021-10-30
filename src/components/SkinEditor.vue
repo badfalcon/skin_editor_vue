@@ -1,16 +1,22 @@
 <template>
   <div id="skinEditor">
-    <div class="debug">
-      {{ name }},{{ currentLayer }}
+<!--    <div class="debug">-->
+<!--      {{ name }},{{ currentLayer }}-->
+<!--    </div>-->
+    <div id="appHead">
+      <div id="toolManager">
+        <button v-for="(value,index) in tools" :key="'tool'+index" @click="selectTool(index)">{{value.name}}</button>
+        {{currentTool}},{{tools}}
+      </div>
     </div>
-    <div id="toolManager">
-      <button v-for="(value,index) in tools" :key="'tool'+index" @click="selectTool(index)">{{value.name}}</button>
-      {{currentTool}},{{tools}}
+    <div id="appBody">
+      <!--    <PixelCanvas ref="mainCanvas" :width=400 :height=400 :pixel-width=64 :pixel-height=64></PixelCanvas>-->
+      <div id="canvasArea">
+        <canvas id="mainCanvas" ref="mainCanvas" width="400" height="400"
+                v-on="{pointerover:onPointerOver,pointerenter:onPointerEnter,pointerdown:onPointerDown,pointermove:onPointerMove,pointerup:onPointerUp,pointerout:onPointerOut,pointerleave:onPointerLeave}"></canvas>
+      </div>
+      <LayerManager id="layerManager" ref="layerManager" @repaint="repaint" @updateLayer="updateLayer"></LayerManager>
     </div>
-<!--    <PixelCanvas ref="mainCanvas" :width=400 :height=400 :pixel-width=64 :pixel-height=64></PixelCanvas>-->
-    <canvas id="mainCanvas" ref="mainCanvas" width="400" height="400"
-            v-on="{pointerover:onPointerOver,pointerenter:onPointerEnter,pointerdown:onPointerDown,pointermove:onPointerMove,pointerup:onPointerUp,pointerout:onPointerOut,pointerleave:onPointerLeave}"></canvas>
-    <LayerManager ref="layerManager" @repaint="repaint" @updateLayer="updateLayer"></LayerManager>
   </div>
 </template>
 
@@ -145,7 +151,31 @@ export default {
   background: aqua;
 }
 
+#appHead{
+
+}
+
+#appBody{
+  display:flex;
+}
+
+#toolManager{
+  background: lightgreen;
+}
+
+#canvasArea{
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #mainCanvas{
   background: white;
+}
+
+#layerManager{
+  -webkit-flex-basis: 50px;
+  flex-basis: 200px;
 }
 </style>
