@@ -4,6 +4,7 @@ export default class PixelCanvas {
   rawCanvas = null;
   prev_pt = null;
   toolIndex = 0;
+  color = [255, 0, 0, 255];
   width;
   height;
   pixelWidth;
@@ -38,6 +39,10 @@ export default class PixelCanvas {
     this.toolIndex = index;
   }
 
+  setColor(r, g, b, a) {
+    this.color = [r, g, b, a];
+  }
+
   repaint() {
     this.ctx.putImageData(this.imageData, 0, 0)
     let ctx = this.dom.getContext('2d')
@@ -61,7 +66,7 @@ export default class PixelCanvas {
     switch (this.toolIndex) {
       case 0:
         if (pt) {
-          this.setDot(pt.x, pt.y, [255, 0, 0, 255])
+          this.setDot(pt.x, pt.y, this.color)
           this.prev_pt = pt
           this.repaint()
           return true;
@@ -77,7 +82,7 @@ export default class PixelCanvas {
     switch (this.toolIndex) {
       case 0:
         if (e.pressure && pt) {
-          this.setLine(this.prev_pt.x, this.prev_pt.y, pt.x, pt.y, [255, 0, 0, 255])
+          this.setLine(this.prev_pt.x, this.prev_pt.y, pt.x, pt.y, this.color)
           this.prev_pt = pt
           this.repaint()
           return true;
@@ -86,16 +91,19 @@ export default class PixelCanvas {
     }
     return false;
   }
+
   onPointerUp(e) {
     // eslint-disable-next-line no-unused-vars
     let pt = this.getPoint(e)
     return false;
   }
+
   onPointerOut(e) {
     // eslint-disable-next-line no-unused-vars
     let pt = this.getPoint(e)
     return false;
   }
+
   onPointerLeave(e) {
     // eslint-disable-next-line no-unused-vars
     let pt = this.getPoint(e)

@@ -6,6 +6,7 @@
     <div id="appHead">
       <div id="toolManager">
         <button v-for="(value,index) in tools" :key="'tool'+index" @click="selectTool(index)">{{value.name}}</button>
+        <input type="color" @change="selectColor" value="#ff0000">
         {{currentTool}},{{tools}}
       </div>
     </div>
@@ -54,6 +55,15 @@ export default {
     selectTool(index){
       this.currentTool = index
       this.pixelCanvas.setTool(index)
+    },
+
+    selectColor(e) {
+      console.log(e.target.value)
+      let hex = e.target.value
+      let r = parseInt(hex.slice(1, 3), 16),
+          g = parseInt(hex.slice(3, 5), 16),
+          b = parseInt(hex.slice(5, 7), 16);
+      this.pixelCanvas.setColor(r, g, b, 255);
     },
 
     onPointerEnter(e) {
