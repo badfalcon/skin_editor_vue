@@ -45,7 +45,8 @@ export default {
     repaint() {
       let ctx = this.$refs.mainCanvas.getContext('2d')
       ctx.clearRect(0, 0, 400, 400)
-      this.$refs.layerManager.layers.forEach((layer) => {
+      const layers = [...this.$refs.layerManager.layers].reverse()
+      layers.forEach((layer) => {
         if (layer.visible) {
           ctx.drawImage(layer.dom, 0, 0,400,400)
         }
