@@ -55,6 +55,7 @@ export default class PixelCanvas {
     let pt = this.getPoint(e)
     return false;
   }
+
   onPointerDown(e) {
     let pt = this.getPoint(e)
     switch (this.toolIndex) {
@@ -69,12 +70,13 @@ export default class PixelCanvas {
     }
     return false;
   }
+
   onPointerMove(e) {
     //todo pressure使うと出て戻ってきたときとかにややこしくなるからフラグで管理でも
     let pt = this.getPoint(e)
     switch (this.toolIndex) {
       case 0:
-        if(e.pressure && pt){
+        if (e.pressure && pt) {
           this.setLine(this.prev_pt.x, this.prev_pt.y, pt.x, pt.y, [255, 0, 0, 255])
           this.prev_pt = pt
           this.repaint()
@@ -106,7 +108,8 @@ export default class PixelCanvas {
       x: (e.clientX - clientRect.left) / this.width * this.pixelWidth,
       y: (e.clientY - clientRect.top) / this.height * this.pixelHeight
     };
-    return (0 <= rawPt.x && rawPt.x <= this.width && 0 <= rawPt.y && rawPt.y <= this.height) ? {
+    return (0 <= rawPt.x && rawPt.x <= this.width && 0 <= rawPt.y && rawPt.y
+        <= this.height) ? {
       x: Math.floor(rawPt.x),
       y: Math.floor(rawPt.y)
     } : false;
@@ -121,15 +124,15 @@ export default class PixelCanvas {
     data[index + 3] = color[3]
   }
 
-  getDot(x,y){
+  getDot(x, y) {
     let data = this.imageData.data
     let index = (this.imageData.width * y + x) * 4
-    return data.slice(index,index + 3);
+    return data.slice(index, index + 3);
   }
 
-  setLine(x1,y1,x2,y2,color){
+  setLine(x1, y1, x2, y2, color) {
     let steep = Math.abs(y2 - y1) > Math.abs(x2 - x1)
-    if(steep){
+    if (steep) {
       let tmp = x1;
       x1 = y1;
       y1 = tmp;
@@ -138,7 +141,7 @@ export default class PixelCanvas {
       x2 = y2;
       y2 = tmp;
     }
-    if(x1 > x2){
+    if (x1 > x2) {
       let tmp = x1;
       x1 = x2;
       x2 = tmp;
@@ -151,11 +154,11 @@ export default class PixelCanvas {
     let dy = Math.abs(y2 - y1)
     let error = dx / 2
     let y = y1
-    let y_step = y1 < y2 ? 1: -1
-    for(let x = x1; x <= x2; x++){
-      steep ? this.setDot(y,x,color) : this.setDot(x,y,color)
+    let y_step = y1 < y2 ? 1 : -1
+    for (let x = x1; x <= x2; x++) {
+      steep ? this.setDot(y, x, color) : this.setDot(x, y, color)
       error -= dy
-      if(error < 0) {
+      if (error < 0) {
         y += y_step
         error += dx
       }
