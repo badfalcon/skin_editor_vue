@@ -1,7 +1,7 @@
 export default class PixelCanvas{
   dom = null;
   ctx = null;
-  hiddenCanvas = null;
+  rawCanvas = null;
   prev_pt = null;
   toolIndex = 0;
   width;
@@ -22,10 +22,10 @@ export default class PixelCanvas{
     this.dom.getContext('2d').imageSmoothingEnabled = false;
     this.dom.width = this.width;
     this.dom.height = this.height;
-    this.hiddenCanvas = document.createElement("canvas");
-    this.hiddenCanvas.width = this.pixelWidth;
-    this.hiddenCanvas.height = this.pixelHeight;
-    this.setContext(this.hiddenCanvas.getContext('2d'));
+    this.rawCanvas = document.createElement("canvas");
+    this.rawCanvas.width = this.pixelWidth;
+    this.rawCanvas.height = this.pixelHeight;
+    this.setContext(this.rawCanvas.getContext('2d'));
   }
 
   setContext(ctx) {
@@ -41,7 +41,7 @@ export default class PixelCanvas{
   repaint() {
     this.ctx.putImageData(this.imageData, 0, 0)
     let ctx = this.dom.getContext('2d')
-    ctx.drawImage(this.hiddenCanvas, 0, 0, this.width, this.height)
+    ctx.drawImage(this.rawCanvas, 0, 0, this.width, this.height)
   }
 
   onPointerOver(e) {
