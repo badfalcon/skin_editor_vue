@@ -1,4 +1,4 @@
-export default class PixelCanvas{
+export default class PixelCanvas {
   dom = null;
   ctx = null;
   rawCanvas = null;
@@ -9,7 +9,7 @@ export default class PixelCanvas{
   pixelWidth;
   pixelHeight;
 
-  constructor(width = 400,height = 400,pixelWidth = 64,pixelHeight = 64) {
+  constructor(width = 400, height = 400, pixelWidth = 64, pixelHeight = 64) {
     this.width = width;
     this.height = height;
     this.pixelWidth = pixelWidth;
@@ -17,7 +17,7 @@ export default class PixelCanvas{
     this.initialize();
   }
 
-  initialize(){
+  initialize() {
     this.dom = document.createElement("canvas");
     this.dom.getContext('2d').imageSmoothingEnabled = false;
     this.dom.width = this.width;
@@ -34,7 +34,7 @@ export default class PixelCanvas{
     this.repaint()
   }
 
-  setTool(index){
+  setTool(index) {
     this.toolIndex = index;
   }
 
@@ -57,9 +57,9 @@ export default class PixelCanvas{
   }
   onPointerDown(e) {
     let pt = this.getPoint(e)
-    switch (this.toolIndex){
+    switch (this.toolIndex) {
       case 0:
-        if(pt){
+        if (pt) {
           this.setDot(pt.x, pt.y, [255, 0, 0, 255])
           this.prev_pt = pt
           this.repaint()
