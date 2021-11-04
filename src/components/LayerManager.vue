@@ -4,7 +4,7 @@
     <button @click="addLayer">add layer</button>
 <!--    <button @click="repaint">親のイベントを呼び出す</button>-->
     <Layer v-for="layer in layers" v-bind:key="layer.id" :layer_obj="layer"
-           @layer-toggle="toggle(layer)" @layer-select="select(layer)"
+           @layer-toggle="toggle(layer)" @layer-select="select(layer)" @layer-remove="remove(layer)"
            :class="{currentLayer: layer.id===current}"></Layer>
   </div>
 </template>
@@ -36,6 +36,22 @@ export default {
     toggle(layer) {
       console.log("toggle " + layer.id)
       layer.toggleVisible()
+      this.repaint()
+    },
+    remove(layer) {
+      console.log("remove " + layer.id)
+      // todo disable buttons when only 1 layer
+      let layerId = layer.id;
+      let targetIndex = this.layers.findIndex(value => value.id === layerId)
+      this.layers.splice(targetIndex,1)
+      if(targetIndex === this.layers.length){
+        // last index
+        this.select(this.layers[targetIndex-1])
+      }else{
+        if(this.current === layerId){
+          this.select(this.layers[targetIndex])
+        }
+      }
       this.repaint()
     },
     addLayer() {

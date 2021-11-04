@@ -5,6 +5,7 @@
 <!--    <canvas class="layer-thumbnail" ref="layerCanvas" width="50px" height="50px"></canvas>-->
     <span class="layer_name">{{ layer_obj.nickname }}</span> <!--todo check-->
     <button class="layer_visible" @click="toggle">sh/hi</button>
+    <button class="layer_delete" @click="remove">rem</button>
     <button class="layer_up" @click="up">↑</button>
     <button class="layer_down" @click="down">↓</button>
   </div>
@@ -25,6 +26,10 @@ export default {
     },
     toggle(e) {
       this.$emit("layer-toggle")
+      e.stopPropagation();
+    },
+    remove(e){
+      this.$emit("layer-remove")
       e.stopPropagation();
     },
     up(e) {
