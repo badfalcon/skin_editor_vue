@@ -3,7 +3,7 @@
 <!--    <div class="debug">{{ name }},{{ current }},{{ nextIndex }},{{ layers }}</div>-->
     <button @click="addLayer">add layer</button>
 <!--    <button @click="repaint">親のイベントを呼び出す</button>-->
-    <Layer v-for="layer in layers" v-bind:key="layer.id" :layer_obj="layer"
+    <Layer v-for="layer in reversedLayers" v-bind:key="layer.id" :layer_obj="layer"
            @layer-toggle="toggle(layer)" @layer-select="select(layer)" @layer-remove="remove(layer)"
            :class="{currentLayer: layer.id===current}"></Layer>
   </div>
@@ -22,6 +22,11 @@ export default {
       layers: [],
       current: 0,
       nextIndex: 0
+    }
+  },
+  computed: {
+    reversedLayers:function(){
+      return this.layers.slice().reverse();
     }
   },
   methods: {
@@ -59,7 +64,7 @@ export default {
       let newLayer = new layerObject(this.nextIndex)
       let currentIndex = this.layers.findIndex(value => value.id === this.current)
       console.log("currentIndex = " + currentIndex)
-      this.layers.splice(currentIndex, 0, newLayer)
+      this.layers.splice(currentIndex + 1, 0, newLayer)
       this.nextIndex += 1
       this.select(newLayer)
       this.repaint()
