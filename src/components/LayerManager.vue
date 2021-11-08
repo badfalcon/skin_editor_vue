@@ -4,6 +4,7 @@
     <button @click="addLayer">add layer</button>
 <!--    <button @click="repaint">親のイベントを呼び出す</button>-->
     <Layer v-for="layer in reversedLayers" v-bind:key="layer.id" :layer_obj="layer"
+           @layer-up="up(layer)" @layer-down="down(layer)"
            @layer-toggle="toggle(layer)" @layer-select="select(layer)" @layer-remove="remove(layer)"
            :class="{currentLayer: layer.id===current}"></Layer>
   </div>
@@ -41,6 +42,22 @@ export default {
     toggle(layer) {
       console.log("toggle " + layer.id)
       layer.toggleVisible()
+      this.repaint()
+    },
+    up(layer) {
+      console.log("up " + layer.id)
+      let sourceIndex = this.layers.findIndex(value => value.id === layer.id)
+      if(sourceIndex === this.layers.length - 1) return;
+      let targetIndex  = sourceIndex + 1
+      this.layers.splice(sourceIndex, 2, this.layers[targetIndex], this.layers[sourceIndex])
+      this.repaint()
+    },
+    down(layer) {
+      console.log("down " + layer.id)
+      let sourceIndex = this.layers.findIndex(value => value.id === layer.id)
+      if(sourceIndex === 0) return;
+      let targetIndex  = sourceIndex - 1
+      this.layers.splice(targetIndex, 2, this.layers[sourceIndex], this.layers[targetIndex])
       this.repaint()
     },
     remove(layer) {

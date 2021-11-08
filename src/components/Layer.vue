@@ -1,5 +1,5 @@
 <template>
-  <div :id="'layer_' + layer_obj.id" ref="layer" @click="select"
+  <div  draggable="true" :id="'layer_' + layer_obj.id" ref="layer" @click="select"
        :class="[{hidden: !layer_obj.visible},'layer']"
        @click.right.prevent="openLayerMenu">
 <!--    <canvas class="layer-thumbnail" ref="layerCanvas" width="50px" height="50px"></canvas>-->
