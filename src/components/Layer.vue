@@ -5,15 +5,15 @@
 <!--    <canvas class="layer-thumbnail" ref="layerCanvas" width="50px" height="50px"></canvas>-->
     <span class="layer_name">{{ layer_obj.nickname }}</span> <!--todo check-->
     <button class="layer_visible" @click="toggle">sh/hi</button>
-    <button class="layer_delete" @click="remove">rem</button>
-    <button class="layer_up" @click="up">↑</button>
-    <button class="layer_down" @click="down">↓</button>
+    <button class="layer_delete" @click="remove" :disabled="sole_layer">rem</button>
+    <button class="layer_up" @click="up" :disabled="sole_layer">↑</button>
+    <button class="layer_down" @click="down" :disabled="sole_layer">↓</button>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['layer_obj'],
+  props: ['layer_obj','sole_layer'],
   name: "Layer",
   data() {
     return {

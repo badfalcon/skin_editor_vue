@@ -3,7 +3,7 @@
 <!--    <div class="debug">{{ name }},{{ current }},{{ nextIndex }},{{ layers }}</div>-->
     <button @click="addLayer">add layer</button>
 <!--    <button @click="repaint">親のイベントを呼び出す</button>-->
-    <Layer v-for="layer in reversedLayers" v-bind:key="layer.id" :layer_obj="layer"
+    <Layer v-for="layer in reversedLayers" v-bind:key="layer.id" :layer_obj="layer" :sole_layer="isSoleLayer"
            @layer-up="up(layer)" @layer-down="down(layer)"
            @layer-toggle="toggle(layer)" @layer-select="select(layer)" @layer-remove="remove(layer)"
            :class="{currentLayer: layer.id===current}"></Layer>
@@ -28,6 +28,10 @@ export default {
   computed: {
     reversedLayers:function(){
       return this.layers.slice().reverse();
+    },
+    isSoleLayer:function(){
+      console.log("sole layer is "+(this.layers.length === 1)?"true":"false")
+      return this.layers.length === 1;
     }
   },
   methods: {
@@ -62,7 +66,6 @@ export default {
     },
     remove(layer) {
       console.log("remove " + layer.id)
-      // todo disable buttons when only 1 layer
       let layerId = layer.id;
       let targetIndex = this.layers.findIndex(value => value.id === layerId)
       this.layers.splice(targetIndex,1)
