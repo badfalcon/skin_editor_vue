@@ -32,7 +32,6 @@
 <script>
 import Pen from "@/components/Pen";
 import Eraser from "@/components/Eraser";
-import PixelCanvas from "@/components/PixelCanvas";
 import layerObject from "@/components/LayerObject";
 import Layer from "@/components/Layer";
 
@@ -45,13 +44,23 @@ export default {
       currentLayer: null,
 
       tools: [new Pen,new Eraser],
-      pixelCanvas: new PixelCanvas(),
-      ctx: null,
-      currentTool:-1,
 
       layers: [],
       current: 0,
-      nextIndex: 0
+      nextIndex: 0,
+
+      currentTool:-1,
+      color: [255,0,0,255],
+
+      ctx: null,
+      bufferCanvas: null,
+      pixelHeight:64,
+      pixelWidth:64,
+      canvasWidth:400,
+      canvasHeight:400,
+
+      pt_old: null,
+      imageData: null,
     }
   },
   computed: {
@@ -74,22 +83,23 @@ export default {
       })
     },
 
-    selectTool(index){
-      this.currentTool = index
-      this.pixelCanvas.setTool(index)
-    },
-
-    selectColor(e) {
-      console.log(e.target.value)
-      let hex = e.target.value
-      let r = parseInt(hex.slice(1, 3), 16),
-          g = parseInt(hex.slice(3, 5), 16),
-          b = parseInt(hex.slice(5, 7), 16);
-      this.pixelCanvas.setColor(r, g, b, 255);
-    },
 
     onPointerEnter(e) {
-      let repaintFlg = this.pixelCanvas.onPointerEnter(e)
+      console.log(e.type)
+      let repaintFlg = false
+      // let repaintFlg = this.pixelCanvas.onPointerEnter(e)
+      let pt = this.getPoint(e)
+      console.log(pt)
+      switch (this.currentTool) {
+        case 0:
+          if (e.pressure && pt) {
+            this.setDot(pt.x, pt.y, this.color)
+            this.prev_pt = pt
+            this.backRepaint()
+            repaintFlg = true;
+          }
+          break;
+      }
       if(repaintFlg) this.repaint()
       // if(typeof this.tools[this.currentTool].onPointerEnter == "function"){
       //   let pt = this.getPoint(e)
@@ -98,7 +108,11 @@ export default {
       // }
     },
     onPointerOver(e) {
-      let repaintFlg =this.pixelCanvas.onPointerOver(e)
+      console.log(e.type)
+      let repaintFlg = false
+      let pt = this.getPoint(e)
+      console.log(pt)
+      // let repaintFlg =this.pixelCanvas.onPointerOver(e)
       if(repaintFlg) this.repaint()
       // if(typeof this.tools[this.currentTool].onPointerOver == "function"){
       //   let pt = this.getPoint(e)
@@ -107,7 +121,21 @@ export default {
       // }
     },
     onPointerDown(e) {
-      let repaintFlg = this.pixelCanvas.onPointerDown(e)
+      console.log(e.type)
+      let repaintFlg = false
+      let pt = this.getPoint(e)
+      console.log(pt)
+      switch (this.currentTool) {
+        case 0:
+          if (pt) {
+            this.setDot(pt.x, pt.y, this.color)
+            this.prev_pt = pt
+            this.backRepaint()
+            repaintFlg = true;
+          }
+          break;
+      }
+      // let repaintFlg = this.pixelCanvas.onPointerDown(e)
       if(repaintFlg) this.repaint()
       // if(typeof this.tools[this.currentTool].onPointerDown == "function"){
       //   let pt = this.getPoint(e)
@@ -117,7 +145,21 @@ export default {
       // }
     },
     onPointerMove(e) {
-      let repaintFlg = this.pixelCanvas.onPointerMove(e)
+      // console.log(e.type)
+      let repaintFlg = false
+      //todo pressure使うと出て戻ってきたときとかにややこしくなるからフラグで管理でも
+      let pt = this.getPoint(e)
+      switch (this.currentTool) {
+        case 0:
+          if (e.pressure && pt) {
+            this.setLine(this.prev_pt.x, this.prev_pt.y, pt.x, pt.y, this.color)
+            this.prev_pt = pt
+            this.backRepaint()
+            repaintFlg = true;
+          }
+          break;
+      }
+      // let repaintFlg = this.pixelCanvas.onPointerMove(e)
       if(repaintFlg) this.repaint()
       // if(typeof this.tools[this.currentTool].onPointerMove == "function"){
       //   let pt = this.getPoint(e)
@@ -126,7 +168,9 @@ export default {
       // }
     },
     onPointerUp(e) {
-      let repaintFlg = this.pixelCanvas.onPointerUp(e)
+      console.log(e.type)
+      let repaintFlg = false
+      // let repaintFlg = this.pixelCanvas.onPointerUp(e)
       if(repaintFlg) this.repaint()
       // if(typeof this.tools[this.currentTool].onPointerUp == "function"){
       //   let pt = this.getPoint(e)
@@ -135,7 +179,23 @@ export default {
       // }
     },
     onPointerOut(e) {
-      let repaintFlg = this.pixelCanvas.onPointerOut(e)
+      console.log(e.type)
+      let repaintFlg = false
+      // let repaintFlg = this.pixelCanvas.onPointerOut(e)
+      let pt = this.getPoint(e)
+      console.log(pt)
+      if(!pt) return
+      else console.log("aaaaa")
+      switch (this.currentTool) {
+        case 0:
+          if (e.pressure && pt) {
+            this.setLine(this.prev_pt.x, this.prev_pt.y, pt.x, pt.y, this.color)
+            this.prev_pt = pt
+            this.backRepaint()
+            repaintFlg = true;
+          }
+          break;
+      }
       if(repaintFlg) this.repaint()
       // if(typeof this.tools[this.currentTool].onPointerOut == "function"){
       //   let pt = this.getPoint(e)
@@ -144,7 +204,11 @@ export default {
       // }
     },
     onPointerLeave(e) {
-      let repaintFlg = this.pixelCanvas.onPointerLeave(e)
+      console.log(e.type)
+      let repaintFlg = false
+      let pt = this.getPoint(e)
+      console.log(pt)
+      // let repaintFlg = this.pixelCanvas.onPointerLeave(e)
       if(repaintFlg) this.repaint()
       // if(typeof this.tools[this.currentTool].onPointerLeave == "function"){
       //   let pt = this.getPoint(e)
@@ -152,15 +216,14 @@ export default {
       //   if(repaintFlg) this.repaint()
       // }
     },
-    getPoint(e) {
-      let clientRect = e.target.getBoundingClientRect();
-      return {x: (e.clientX - clientRect.left)/400*64, y: (e.clientY - clientRect.top)/400*64};
-    },
+    // getPoint(e) {
+    //   let clientRect = e.target.getBoundingClientRect();
+    //   return {x: (e.clientX - clientRect.left)/400*64, y: (e.clientY - clientRect.top)/400*64};
+    // },
 
     updateLayer(){
       this.currentLayer = this.getLayer()
-      this.ctx = this.currentLayer.dom.getContext('2d')
-      this.pixelCanvas.setContext(this.ctx)
+      this.setContext(this.currentLayer.dom.getContext('2d'))
     },
 
     select(layer) {
@@ -216,9 +279,104 @@ export default {
     },
     getLayer(n = this.current) {
       return this.layers.find(value => value.id === n)
-    }
+    },
 
 
+    setTool(index) {
+      this.toolIndex = index;
+    },
+    setColor(r, g, b, a) {
+      this.color = [r, g, b, a];
+    },
+    setContext(ctx) {
+      this.ctx = ctx;
+      this.imageData = this.ctx.getImageData(0, 0, this.pixelWidth, this.pixelHeight)
+      this.backRepaint()
+    },
+    selectTool(index){
+      this.currentTool = index
+    },
+
+    selectColor(e) {
+      console.log(e.target.value)
+      let hex = e.target.value
+      let r = parseInt(hex.slice(1, 3), 16),
+          g = parseInt(hex.slice(3, 5), 16),
+          b = parseInt(hex.slice(5, 7), 16);
+      this.setColor(r, g, b, 255);
+    },
+
+    backRepaint() {
+      this.ctx.putImageData(this.imageData, 0, 0)
+      // let ctx = this.currentLayer.dom.getContext('2d')
+      // ctx.d
+      // ctx.drawImage(this.rawCanvas, 0, 0, this.width, this.height)
+    },
+
+
+
+    getPoint(e) {
+      let clientRect = e.target.getBoundingClientRect();
+      let rawPt = {
+        x: (e.clientX - clientRect.left) / this.canvasWidth * this.pixelWidth,
+        y: (e.clientY - clientRect.top) / this.canvasHeight * this.pixelHeight
+      };
+      return (0 <= rawPt.x && rawPt.x <= this.pixelWidth && 0 <= rawPt.y && rawPt.y
+          <= this.pixelHeight) ? {
+        x: Math.floor(rawPt.x),
+        y: Math.floor(rawPt.y)
+      } : false;
+    },
+
+    setDot(x, y, color) {
+      let data = this.imageData.data
+      let index = (this.imageData.width * y + x) * 4
+      data[index] = color[0]
+      data[index + 1] = color[1]
+      data[index + 2] = color[2]
+      data[index + 3] = color[3]
+    },
+
+    getDot(x, y) {
+      let data = this.imageData.data
+      let index = (this.imageData.width * y + x) * 4
+      return data.slice(index, index + 3);
+    },
+
+    setLine(x1, y1, x2, y2, color) {
+      let steep = Math.abs(y2 - y1) > Math.abs(x2 - x1)
+      if (steep) {
+        let tmp = x1;
+        x1 = y1;
+        y1 = tmp;
+
+        tmp = x2;
+        x2 = y2;
+        y2 = tmp;
+      }
+      if (x1 > x2) {
+        let tmp = x1;
+        x1 = x2;
+        x2 = tmp;
+
+        tmp = y1;
+        y1 = y2;
+        y2 = tmp;
+      }
+      let dx = x2 - x1
+      let dy = Math.abs(y2 - y1)
+      let error = dx / 2
+      let y = y1
+      let y_step = y1 < y2 ? 1 : -1
+      for (let x = x1; x <= x2; x++) {
+        steep ? this.setDot(y, x, color) : this.setDot(x, y, color)
+        error -= dy
+        if (error < 0) {
+          y += y_step
+          error += dx
+        }
+      }
+    },
   },
   created() {
     console.log("[Skin Editor] created")

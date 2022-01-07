@@ -1,16 +1,22 @@
 <template>
   <div id="app">
-    {{name}}
-    <SkinEditor></SkinEditor>
+    {{ name }}
+        <SkinEditor></SkinEditor>
+<!--    <test-component></test-component>-->
   </div>
 </template>
 
 <script>
 import SkinEditor from "@/components/SkinEditor";
+// import TestComponent from "@/components/TestComponent";
+
 export default {
   name: "App",
-  components: {SkinEditor},
-  data(){
+  components: {
+    // TestComponent,
+    SkinEditor
+  },
+  data() {
     return {
       name: 'App'
     }
