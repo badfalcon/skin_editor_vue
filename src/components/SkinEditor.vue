@@ -7,6 +7,8 @@
       <div id="toolManager">
         <button v-for="(value,index) in tools" :key="'tool'+index" @click="selectTool(index)">{{value.name}}</button>
         <input type="color" @change="selectColor" value="#ff0000">
+        <button @click="undo" :disabled="!actionManager.canUndo()">undo</button>
+        <button @click="redo" :disabled="!actionManager.canRedo()">redo</button>
         {{currentTool}},{{tools}}
       </div>
     </div>
@@ -34,6 +36,7 @@ import Pen from "@/components/Pen";
 import Eraser from "@/components/Eraser";
 import layerObject from "@/components/LayerObject";
 import Layer from "@/components/Layer";
+import ActionManager from "@/components/ActionManager";
 
 export default {
   name: "SkinEditor",
@@ -61,6 +64,8 @@ export default {
 
       pt_old: null,
       imageData: null,
+
+      actionManager: null
     }
   },
   computed: {
@@ -377,9 +382,18 @@ export default {
         }
       }
     },
+
+    undo(){
+      this.actionManager.undo();
+    },
+
+    redo(){
+      this.actionManager.redo();
+    }
   },
   created() {
     console.log("[Skin Editor] created")
+    this.actionManager = new ActionManager();
   },
   mounted() {
     console.log("[Skin Editor] mounted")
