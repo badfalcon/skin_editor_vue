@@ -3,11 +3,20 @@ export default class ActionManager
   actionList = [];
   index = 0;
   constructor() {
-
+    document.addEventListener('editorAction',(e)=>{
+      console.log("action called");
+      console.log(e);
+    });
   }
 
-  addAction(){
-
+  addAction(action){
+    if(this.canRedo()){
+      console.log(this.actionList);
+      this.actionList.splice(this.index);
+      console.log(this.actionList);
+    }
+    this.actionList.add(action);
+    ++this.index;
   }
 
   undoAction(){
@@ -26,3 +35,4 @@ export default class ActionManager
     return this.index !== this.actionList.length;
   }
 }
+

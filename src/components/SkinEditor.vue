@@ -133,6 +133,7 @@ export default {
       switch (this.currentTool) {
         case 0:
           if (pt) {
+            // todo store changed cells and color
             this.setDot(pt.x, pt.y, this.color)
             this.prev_pt = pt
             this.backRepaint()
@@ -177,6 +178,16 @@ export default {
       let repaintFlg = false
       // let repaintFlg = this.pixelCanvas.onPointerUp(e)
       if(repaintFlg) this.repaint()
+      switch (this.currentTool) {
+        case 0:{
+          // todo 保存するための変更点の取得
+          const event = new CustomEvent('editorAction',{'detail':{
+
+            }});
+          document.dispatchEvent(event);
+          break;
+        }
+      }
       // if(typeof this.tools[this.currentTool].onPointerUp == "function"){
       //   let pt = this.getPoint(e)
       //   let repaintFlg =this.tools[this.currentTool].onPointerUp(this.ctx,pt)
@@ -281,6 +292,8 @@ export default {
       this.nextIndex += 1
       this.select(newLayer)
       this.repaint()
+      const event = new CustomEvent('editorAction');
+      document.dispatchEvent(event);
     },
     getLayer(n = this.current) {
       return this.layers.find(value => value.id === n)
@@ -299,7 +312,9 @@ export default {
       this.backRepaint()
     },
     selectTool(index){
-      this.currentTool = index
+      this.currentTool = index;
+      const event = new CustomEvent('editorAction');
+      document.dispatchEvent(event);
     },
 
     selectColor(e) {
@@ -340,6 +355,7 @@ export default {
       data[index + 1] = color[1]
       data[index + 2] = color[2]
       data[index + 3] = color[3]
+      // todo add changes to list
     },
 
     getDot(x, y) {
