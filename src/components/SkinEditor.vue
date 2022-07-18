@@ -65,6 +65,7 @@ export default {
       pt_old: null,
       imageData: null,
 
+      changes: [],
       actionManager: null
     }
   },
@@ -132,6 +133,7 @@ export default {
       console.log(pt)
       switch (this.currentTool) {
         case 0:
+          this.changes = []
           if (pt) {
             // todo store changed cells and color
             this.setDot(pt.x, pt.y, this.color)
@@ -182,7 +184,8 @@ export default {
         case 0:{
           // todo 保存するための変更点の取得
           const event = new CustomEvent('editorAction',{'detail':{
-
+              action:"act",
+              changes:this.changes
             }});
           document.dispatchEvent(event);
           break;
@@ -355,7 +358,12 @@ export default {
       data[index + 1] = color[1]
       data[index + 2] = color[2]
       data[index + 3] = color[3]
-      // todo add changes to list
+      let action = [x,y,color]
+      if(!this.changes.some(value => value[0] === x &&  value[1] === y)){
+        this.changes.push(action)
+      }else{
+        // todo update color?
+      }
     },
 
     getDot(x, y) {
